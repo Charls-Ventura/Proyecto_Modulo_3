@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Productos</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <main class="content-panel">
+        <div class="content-header">
+            <div>
+                <h1>Productos</h1>
+                <p class="page-caption">Listado de productos con su tarifa de produccion actual</p>
+            </div>
+            <div class="header-actions">
+                <a class="secondary-btn" th:href="@{/tarifas-produccion}">Configurar tarifa de produccion</a>
+                <a class="secondary-btn" th:href="@{/unidades-medida}">Unidades de medida</a>
+                <a class="primary-btn" th:href="@{/productos/nuevo}">Agregar</a>
+                <form class="search-box" method="get" th:action="@{/productos}">
+                    <input type="text" name="buscar" th:value="${buscar}" placeholder="Buscar por codigo o nombre..." />
+                    <button type="submit">Buscar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="alert success" th:if="${mensajeExito}" th:text="${mensajeExito}"></div>
+        <div class="alert error" th:if="${mensajeError}" th:text="${mensajeError}"></div>
+
+        <div class="table-wrapper">
+            <div class="table-head grid-products-v2">
+                <span>Codigo</span>
+                <span>Nombre</span>
+                <span>Tipo</span>
+                <span>Tarifa Produccion</span>
+                <span>Accion</span>
+            </div>
+
+            <div th:if="${#lists.isEmpty(productos.content)}" class="empty-state">
+                No hay productos registrados con ese criterio.
+            </div>
+
+            <div class="product-row grid-products-v2" th:each="producto : ${productos.content}">
+                <div>
+                    <strong th:text="${producto.codigoSku}"></strong>
+                    <div class="mini-text">Generado automaticamente</div>
+                </div>
+                <div>
+                    <strong th:text="${producto.nombre}"></strong>
+                </div>
+                <div>
+                    <span class="badge neutral-badge" th:text="${producto.tipo}"></span>
+                </div>
+                <div>
+                    <strong th:text="${tarifasActuales[producto.id] != null ? 'RD$ ' + tarifasActuales[producto.id] : 'Sin tarifa'}"></strong>
+                    <div class="mini-text">Tarifa vigente</div>
+                </div>
+                <div class="actions-cell wrap-actions">
+                    <a class="icon-btn blue-btn" th:href="@{/tarifas-produccion/producto/{id}/cambiar(id=${producto.id})}">Cambiar tarifa</a>
+                    <a class="icon-btn" th:href="@{/productos/{id}/editar(id=${producto.id})}">Editar</a>
+                    <button class="icon-btn danger-icon"
+                            type="button"
+                            th:data-tipo="${producto.tipo}"
+                            th:data-nombre="${producto.nombre}"
+                            th:data-action="@{/productos/{id}/eliminar(id=${producto.id})}"
+                            onclick="abrirModalEliminar(this)">🗑</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination" th:if="${productos.totalPages > 0}">
+            <a th:if="${productos.hasPrevious()}"
+               th:href="@{/productos(pagina=${paginaActual - 1}, buscar=${buscar})}">‹ Anterior</a>
+            <a class="page-number"
+               th:each="numero : ${#numbers.sequence(0, productos.totalPages - 1)}"
+               th:if="${numero >= paginaActual - 2 and numero <= paginaActual + 2}"
+               th:classappend="${numero == paginaActual} ? ' current'"
+               th:href="@{/productos(pagina=${numero}, buscar=${buscar})}"
+               th:text="${numero + 1}"></a>
+            <a th:if="${productos.hasNext()}"
+               th:href="@{/productos(pagina=${paginaActual + 1}, buscar=${buscar})}">Siguiente ›</a>
+        </div>
+    </main>
+</div>
+
+<div id="modal-overlay" class="modal-overlay" onclick="cerrarModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h2 class="modal-title">Eliminar producto</h2>
+        <p class="modal-body" id="modal-mensaje"></p>
+        <div class="modal-actions">
+            <button class="modal-btn modal-cancel" onclick="cerrarModal()" type="button">Cancelar</button>
+            <form id="modal-form" method="post">
+                <button class="modal-btn modal-confirm" type="submit">Si eliminar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirModalEliminar(btn) {
+        const tipo = btn.dataset.tipo;
+        const nombre = btn.dataset.nombre;
+        const action = btn.dataset.action;
+        document.getElementById('modal-mensaje').textContent =
+            'Seguro que deseas eliminar el ' + tipo + ' "' + nombre + '"? Esta accion no se puede deshacer.';
+        document.getElementById('modal-form').action = action;
+        document.getElementById('modal-overlay').classList.add('active');
+    }
+    function cerrarModal() {
+        document.getElementById('modal-overlay').classList.remove('active');
+    }
+</script>
+</body>
+</html>

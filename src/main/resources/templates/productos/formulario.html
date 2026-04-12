@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${tituloFormulario}">Formulario</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <main class="content-panel">
+        <div class="content-header form-header">
+            <div>
+                <h1 th:text="${tituloFormulario}"></h1>
+                <p class="page-caption">El codigo se genera automaticamente en backend y no se muestra en alta</p>
+            </div>
+            <a class="secondary-btn" th:href="@{/productos}">Volver al listado</a>
+        </div>
+
+        <div class="alert error" th:if="${errorGeneral}" th:text="${errorGeneral}"></div>
+
+        <form class="product-form compact-form" th:action="${accionFormulario}" th:object="${productoForm}" method="post">
+            <div class="field-group" th:if="${mostrarCodigo}">
+                <label>Codigo generado</label>
+                <input type="text" th:value="${codigoGenerado}" readonly class="input-readonly" />
+            </div>
+
+            <div class="form-grid form-grid-simple">
+                <div class="field-group">
+                    <label for="nombre">Nombre</label>
+                    <input id="nombre" type="text" th:field="*{nombre}" placeholder="Nombre del producto" />
+                    <small class="field-error" th:errors="*{nombre}"></small>
+                </div>
+
+                <div class="field-group">
+                    <label for="tipo">Tipo</label>
+                    <select id="tipo" th:field="*{tipo}">
+                        <option value="">Selecciona...</option>
+                        <option th:each="tipo : ${tiposProducto}" th:value="${tipo}" th:text="${tipo}"></option>
+                    </select>
+                    <small class="field-error" th:errors="*{tipo}"></small>
+                </div>
+
+                <div class="field-group full-width">
+                    <label for="tarifaProduccion">Tarifa de produccion</label>
+                    <input id="tarifaProduccion" type="number" step="0.01" min="0" th:field="*{tarifaProduccion}" placeholder="0.00" />
+                    <small class="field-error" th:errors="*{tarifaProduccion}"></small>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a class="cancel-btn" th:href="@{/productos}">Cancelar</a>
+                <button type="submit" class="primary-btn">Confirmar</button>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>

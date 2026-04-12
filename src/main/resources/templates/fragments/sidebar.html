@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside th:fragment="sidebar">
+    <div class="sidebar-card">
+        <div class="logo-box">
+            <div class="logo-circle">logo</div>
+        </div>
+
+        <nav class="menu-box">
+            <a class="menu-item" th:classappend="${seccionActiva == 'productos'} ? ' active'" th:href="@{/productos}">Inventario</a>
+            <a class="menu-item" th:classappend="${seccionActiva == 'tarifas'} ? ' active'" th:href="@{/tarifas-produccion}">Tarifas</a>
+            <a class="menu-item" th:classappend="${seccionActiva == 'unidades'} ? ' active'" th:href="@{/unidades-medida}">Unidades</a>
+            <span class="menu-item muted">Nómina</span>
+            <span class="menu-item muted">Termometría</span>
+            <span class="menu-item muted">Usuarios</span>
+        </nav>
+    </div>
+</aside>
+</body>
+</html>

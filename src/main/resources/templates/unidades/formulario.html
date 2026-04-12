@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${tituloFormulario}">Unidad de Medida</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <main class="content-panel">
+        <div class="content-header form-header">
+            <div>
+                <h1 th:text="${tituloFormulario}"></h1>
+            </div>
+            <a class="secondary-btn" th:href="@{/unidades-medida}">Volver al listado</a>
+        </div>
+
+        <div class="alert error" th:if="${errorGeneral}" th:text="${errorGeneral}"></div>
+
+        <form class="product-form compact-form" th:action="${accionFormulario}" th:object="${unidadMedidaForm}" method="post">
+            <div class="form-grid form-grid-simple">
+                <div class="field-group">
+                    <label for="nombre">Nombre</label>
+                    <input id="nombre" type="text" th:field="*{nombre}" placeholder="Ej. Saco" />
+                    <small class="field-error" th:errors="*{nombre}"></small>
+                </div>
+                <div class="field-group">
+                    <label for="abreviatura">Abreviatura</label>
+                    <input id="abreviatura" type="text" th:field="*{abreviatura}" placeholder="Ej. sc" />
+                    <small class="field-error" th:errors="*{abreviatura}"></small>
+                </div>
+                <div class="field-group full-width">
+                    <label for="activo">Estado</label>
+                    <select id="activo" th:field="*{activo}">
+                        <option value="">Selecciona...</option>
+                        <option th:value="true">Activa</option>
+                        <option th:value="false">Inactiva</option>
+                    </select>
+                    <small class="field-error" th:errors="*{activo}"></small>
+                </div>
+            </div>
+            <div class="form-actions">
+                <a class="cancel-btn" th:href="@{/unidades-medida}">Cancelar</a>
+                <button type="submit" class="primary-btn">Guardar</button>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>

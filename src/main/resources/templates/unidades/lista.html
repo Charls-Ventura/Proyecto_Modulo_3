@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unidades de Medida</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <main class="content-panel">
+        <div class="content-header">
+            <div>
+                <h1>Unidades de Medida</h1>
+                <p class="page-caption">Catalogo base para la relacion producto unidad</p>
+            </div>
+            <div class="header-actions">
+                <a class="primary-btn" th:href="@{/unidades-medida/nueva}">Agregar unidad</a>
+                <a class="secondary-btn" th:href="@{/productos}">Volver a productos</a>
+            </div>
+        </div>
+
+        <div class="alert success" th:if="${mensajeExito}" th:text="${mensajeExito}"></div>
+
+        <div class="table-wrapper">
+            <div class="table-head grid-unidades">
+                <span>Nombre</span>
+                <span>Abreviatura</span>
+                <span>Estado</span>
+                <span>Accion</span>
+            </div>
+
+            <div class="product-row grid-unidades" th:each="unidad : ${unidades}">
+                <div><strong th:text="${unidad.nombre}"></strong></div>
+                <div><strong th:text="${unidad.abreviatura}"></strong></div>
+                <div>
+                    <span th:class="${unidad.activo} ? 'badge success-badge' : 'badge danger-badge'"
+                          th:text="${unidad.activo} ? 'Activa' : 'Inactiva'"></span>
+                </div>
+                <div class="actions-cell">
+                    <a class="icon-btn" th:href="@{/unidades-medida/{id}/editar(id=${unidad.id})}">Editar</a>
+                    <form th:action="@{/unidades-medida/{id}/eliminar(id=${unidad.id})}" method="post">
+                        <button type="submit" class="icon-btn danger-icon">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
